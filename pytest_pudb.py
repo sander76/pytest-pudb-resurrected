@@ -10,10 +10,16 @@ from _pytest.config import hookimpl
 def pytest_addoption(parser):
     group = parser.getgroup("general")
     group.addoption(
-        "--pudb", action="store_true", dest="usepudb", default=False, help="start the PuDB debugger on errors."
+        "--pudb",
+        "--db",
+        action="store_true",
+        dest="usepudb",
+        default=False,
+        help="start the PuDB debugger on errors.",
     )
     group.addoption(
         "--pudb-trace",
+        "--dbt",
         action="store_true",
         dest="usepudb_trace",
         default=False,

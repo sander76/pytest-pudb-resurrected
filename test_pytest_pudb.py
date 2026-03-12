@@ -74,4 +74,4 @@ def test_pudb_b_integration(pytester):
 def test_pudb_options_registered(pytester):
     """Test that --pudb and --pudb-trace options are registered."""
     result = pytester.runpytest("--help")
-    result.stdout.fnmatch_lines(["*--pudb*", "*--pudb-trace*"])
+    result.stdout.fnmatch_lines(["*--pudb, --db*", "*--pudb-trace, --dbt*"])

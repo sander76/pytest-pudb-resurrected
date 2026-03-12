@@ -20,16 +20,18 @@ uv add pytest-pudb-resurrected
 
 ## Usage
 
-Start the debugger on test failures with `--pudb`:
+Start the debugger on test failures with `--pudb` (or `--db`):
 
 ```bash
 pytest --pudb
+pytest --db    # shortcut
 ```
 
-Start the debugger at the beginning of each test with `--pudb-trace`:
+Start the debugger at the beginning of each test with `--pudb-trace` (or `--dbt`):
 
 ```bash
 pytest --pudb-trace
+pytest --dbt   # shortcut
 ```
 
 Or set breakpoints directly in your code with `pudb.set_trace()`:
