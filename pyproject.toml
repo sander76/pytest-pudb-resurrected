@@ -2,7 +2,7 @@
 name = "pytest-pudb-resurrected"
 version = "0.1.0"
 description = "Pytest PuDB debugger integration"
-readme = "README.rst"
+readme = "README.md"
 license = "MIT"
 authors = [
     { name = "Michael Elovskikh", email = "wronglink@gmail.com" }
@@ -31,8 +31,15 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "nox",
+    "pexpect",
     "ruff",
 ]
+
+[project.urls]
+Homepage = "https://github.com/sander76/pytest-pudb-resurrected"
+Repository = "https://github.com/sander76/pytest-pudb-resurrected.git"
+Changelog = "https://github.com/sander76/pytest-pudb-resurrected/blob/main/HISTORY.rst"
+"Bug Tracker" = "https://github.com/sander76/pytest-pudb-resurrected/issues"
 
 [project.entry-points.pytest11]
 pudb = "pytest_pudb"
@@ -48,7 +55,7 @@ include = ["pytest_pudb.py"]
 [tool.hatch.build.targets.sdist]
 include = [
     "pytest_pudb.py",
-    "README.rst",
+    "README.md",
     "HISTORY.rst",
     "LICENSE",
 ]

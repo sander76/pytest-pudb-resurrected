@@ -9,10 +9,10 @@ from _pytest.config import hookimpl
 
 def pytest_addoption(parser):
     group = parser.getgroup("general")
-    group._addoption(
+    group.addoption(
         "--pudb", action="store_true", dest="usepudb", default=False, help="start the PuDB debugger on errors."
     )
-    group._addoption(
+    group.addoption(
         "--pudb-trace",
         action="store_true",
         dest="usepudb_trace",
@@ -63,9 +63,11 @@ class PuDBWrapper:
                     out, err = outerr
                     sys.stdout.write(out)
                     sys.stdout.write(err)
-            tw = self.pluginmanager.getplugin("terminalreporter")._tw
-            tw.line()
-            tw.sep(">", "entering PuDB (IO-capturing turned off)")
+            terminalreporter = self.pluginmanager.getplugin("terminalreporter")
+            if terminalreporter is not None:
+                tw = terminalreporter._tw
+                tw.line()
+                tw.sep(">", "entering PuDB (IO-capturing turned off)")
             self.pluginmanager.hook.pytest_enter_pdb(config=self.config)
 
     def _get_debugger(self, **kwargs):
