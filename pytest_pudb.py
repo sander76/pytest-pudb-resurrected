@@ -68,7 +68,9 @@ class PuDBWrapper:
                 tw = terminalreporter._tw
                 tw.line()
                 tw.sep(">", "entering PuDB (IO-capturing turned off)")
-            self.pluginmanager.hook.pytest_enter_pdb(config=self.config)
+            # Use the original _get_debugger to avoid infinite recursion
+            dbg = self._pudb_get_debugger()
+            self.pluginmanager.hook.pytest_enter_pdb(config=self.config, pdb=dbg)
 
     def _get_debugger(self, **kwargs):
         self.disable_io_capture()
