@@ -34,7 +34,8 @@ def pytest_configure(config):
         config.pluginmanager.register(pudb_wrapper, "pudb_wrapper")
 
     if config.getvalue("usepudb_trace"):
-        config.pluginmanager.register(pudb_wrapper, "pudb_trace")
+        trace_wrapper = PuDBTraceWrapper(config)
+        config.pluginmanager.register(trace_wrapper, "pudb_trace")
 
     pudb_wrapper.mount()
     config.add_cleanup(pudb_wrapper.unmount)
@@ -104,6 +105,32 @@ class PuDBWrapper:
     def _suspend_capture(self, capman, *args, **kwargs):
         capman.suspend_global_capture(*args, **kwargs)
         return capman.read_global_capture()
+
+
+class PuDBTraceWrapper:
+    """Wrapper that starts PuDB at the beginning of each test."""
+
+    def __init__(self, config):
+        self.config = config
+        self.pluginmanager = config.pluginmanager
+
+    def disable_io_capture(self):
+        if self.pluginmanager is not None:
+            capman = self.pluginmanager.getplugin("capturemanager")
+            if capman:
+                capman.suspend_global_capture(in_=True)
+                outerr = capman.read_global_capture()
+                if outerr:
+                    out, err = outerr
+                    sys.stdout.write(out)
+                    sys.stdout.write(err)
+            terminalreporter = self.pluginmanager.getplugin("terminalreporter")
+            if terminalreporter is not None:
+                tw = terminalreporter._tw
+                tw.line()
+                tw.sep(">", "entering PuDB (IO-capturing turned off)")
+            dbg = pudb._get_debugger()
+            self.pluginmanager.hook.pytest_enter_pdb(config=self.config, pdb=dbg)
 
     @hookimpl(wrapper=True)
     def pytest_pyfunc_call(self, pyfuncitem):
