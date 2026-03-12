@@ -12,8 +12,20 @@ def test_pudb_interaction(testdir):
     child = testdir.spawn_pytest("--pudb %s" % p1)
     child.expect("PuDB")
     child.expect(HELP_MESSAGE)
-    # Check that traceback postmortem handled
-    child.expect("PROCESSING EXCEPTION")
+    child.expect(VARIABLES_TABLE)
+    child.sendeof()
+
+
+def test_pudb_trace(testdir):
+    """Test that --pudb-trace starts debugger at beginning of test."""
+    p1 = testdir.makepyfile("""
+        def test_1():
+            x = 1
+            assert x == 1
+    """)
+    child = testdir.spawn_pytest("--pudb-trace %s" % p1)
+    child.expect("PuDB")
+    child.expect(HELP_MESSAGE)
     child.expect(VARIABLES_TABLE)
     child.sendeof()
 

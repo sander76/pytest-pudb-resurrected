@@ -2,40 +2,56 @@
 pytest-pudb
 ===========
 
-.. image:: https://github.com/wronglink/pytest-pudb/actions/workflows/ci.yml/badge.svg?branch=main
-   :target: https://github.com/wronglink/pytest-pudb/actions/workflows/ci.yml
+.. image:: https://github.com/sander76/pytest-pudb-resurrected/actions/workflows/ci.yml/badge.svg?branch=main
+   :target: https://github.com/sander76/pytest-pudb-resurrected/actions/workflows/ci.yml
    :alt: CI Status
 
 Pytest PuDB debugger integration based on pytest `PDB integration`_
 
 
-Use it as ``--pdb`` ``py.test`` command argument:
-
+Installation
+------------
 
 .. code-block:: console
 
-    py.test --pudb
+    pip install pytest-pudb
 
-Or simply use ``pudb.set_trace`` inside your python code:
+
+Usage
+-----
+
+Start the debugger on test failures with ``--pudb``:
+
+.. code-block:: console
+
+    pytest --pudb
+
+Start the debugger at the beginning of each test with ``--pudb-trace``:
+
+.. code-block:: console
+
+    pytest --pudb-trace
+
+Or set breakpoints directly in your code with ``pudb.set_trace()``:
 
 .. code-block:: python
 
     def test_set_trace_integration():
-        # No --capture=no need
+        # No --capture=no needed
         import pudb
         pudb.set_trace()
         assert 1 == 2
 
     def test_pudb_b_integration():
-        # No --capture=no need
+        # No --capture=no needed
         import pudb.b
-        # traceback is set up here
+        # breakpoint is set here
         assert 1 == 2
 
 
 See also `pytest`_ and `pudb`_ projects.
 
 
-.. _PDB integration: http://doc.pytest.org/en/latest/usage.html#dropping-to-pdb-python-debugger-on-failures
-.. _pudb: https://pypi.python.org/pypi/pudb
-.. _pytest: https://pypi.python.org/pypi/pytest
+.. _PDB integration: https://docs.pytest.org/en/stable/how-to/failures.html#using-pdb-with-pytest
+.. _pudb: https://pypi.org/project/pudb/
+.. _pytest: https://pypi.org/project/pytest/

@@ -1,14 +1,23 @@
 """interactive debugging with PuDB, the Python Debugger."""
 
+import functools
 import sys
 
 import pudb
+from _pytest.config import hookimpl
 
 
 def pytest_addoption(parser):
     group = parser.getgroup("general")
     group._addoption(
         "--pudb", action="store_true", dest="usepudb", default=False, help="start the PuDB debugger on errors."
+    )
+    group._addoption(
+        "--pudb-trace",
+        action="store_true",
+        dest="usepudb_trace",
+        default=False,
+        help="immediately break when running each test.",
     )
 
 
@@ -17,6 +26,9 @@ def pytest_configure(config):
 
     if config.getvalue("usepudb"):
         config.pluginmanager.register(pudb_wrapper, "pudb_wrapper")
+
+    if config.getvalue("usepudb_trace"):
+        config.pluginmanager.register(pudb_wrapper, "pudb_trace")
 
     pudb_wrapper.mount()
     config.add_cleanup(pudb_wrapper.unmount)
@@ -82,6 +94,25 @@ class PuDBWrapper:
     def _suspend_capture(self, capman, *args, **kwargs):
         capman.suspend_global_capture(*args, **kwargs)
         return capman.read_global_capture()
+
+    @hookimpl(wrapper=True)
+    def pytest_pyfunc_call(self, pyfuncitem):
+        """Wrap test function to start PuDB at the beginning of each test."""
+        self._wrap_function_for_tracing(pyfuncitem)
+        return (yield)
+
+    def _wrap_function_for_tracing(self, pyfuncitem):
+        """Wrap the test function to enter pudb before calling it."""
+        self.disable_io_capture()
+        testfunction = pyfuncitem.obj
+        dbg = pudb._get_debugger()
+
+        @functools.wraps(testfunction)
+        def wrapper(*args, **kwargs):
+            func = functools.partial(testfunction, *args, **kwargs)
+            dbg.runcall(func)
+
+        pyfuncitem.obj = wrapper
 
 
 def _enter_pudb(node, excinfo, rep):
