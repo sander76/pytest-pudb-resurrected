@@ -5,7 +5,8 @@ description = "Pytest PuDB debugger integration"
 readme = "README.md"
 license = "MIT"
 authors = [
-    { name = "Michael Elovskikh", email = "wronglink@gmail.com" }
+    { name = "Michael Elovskikh", email = "wronglink@gmail.com" },
+    { name = "Sander Teunissen" }
 ]
 requires-python = ">=3.8"
 classifiers = [
